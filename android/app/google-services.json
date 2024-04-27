@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "171949628853",
+    "project_id": "groupshot-ai-51214",
+    "storage_bucket": "groupshot-ai-51214.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171949628853:android:c5d531d83c58b55b788dfc",
+        "android_client_info": {
+          "package_name": "com.example.groupshot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYbFdHCIG4aF7sD2I8ryWZS3bhrJPbfgI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

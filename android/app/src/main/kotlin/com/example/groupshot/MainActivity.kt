@@ -1,4 +1,4 @@
-package com.example.untitled
+package com.example.groupshot
 
 import io.flutter.embedding.android.FlutterActivity
 
