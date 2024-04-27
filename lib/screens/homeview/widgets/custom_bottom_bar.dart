@@ -17,9 +17,9 @@ class _CustomBottomMenuState extends State<CustomBottomMenu> {
   List<Image> icons = [
     // Replace with your actual SvgPicture widgets
     Image.asset('assets/icons/home.png'),
-    Image.asset('assets/icons/home.png'),
-    Image.asset('assets/icons/home.png'),
-    Image.asset('assets/icons/home.png'),
+    Image.asset('assets/icons/myphotos.png'),
+    Image.asset('assets/icons/inbox.png'),
+    Image.asset('assets/icons/explore.png'),
   ];
 
   // Or, replace with custom widgets if you don't use SVGs
@@ -27,9 +27,10 @@ class _CustomBottomMenuState extends State<CustomBottomMenu> {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
+      color:  Color(0xFFF5F9FF),
       shape: CircularNotchedRectangle(), // Notch for the floating action button
       child: Container(
-        height: 60,
+        height: 40,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(

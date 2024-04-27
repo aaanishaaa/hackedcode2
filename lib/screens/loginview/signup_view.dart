@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:groupshot/screens/loginview/profilefill_view.dart';
 import 'package:groupshot/screens/loginview/signin_view.dart';
+import 'package:groupshot/controllers/userprofile_signup.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -9,6 +11,9 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
+  TextEditingController emailController= TextEditingController();
+  TextEditingController pswdController= TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +37,8 @@ class _SignUpViewState extends State<SignUpView> {
               Text("Discover the power of AI", style: TextStyle(color: Color(0xff545454), fontSize: 14),),
               SizedBox(height: 30,),
               TextFormField(
+                controller: emailController,
+
                 decoration: InputDecoration(
                     fillColor: Colors.white,
                     filled: true,
@@ -44,6 +51,7 @@ class _SignUpViewState extends State<SignUpView> {
               SizedBox(height: 15),
 
               TextFormField(
+                controller: pswdController,
                 decoration: InputDecoration(
                     fillColor: Colors.white,
                     filled: true,
@@ -73,6 +81,15 @@ class _SignUpViewState extends State<SignUpView> {
 
               GestureDetector(
                 onTap: (){
+                  UserProfileSignUp.signUpWithEmailAndPassword(emailController.text, pswdController.text).then((value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Sign up successful!'),
+                          duration: Duration(seconds: 2),
+                        )
+                    );
+                      Navigator.push(context, MaterialPageRoute(builder:(context)=>ProfileFillForm()));}
+                  );
                   // Navigator.push(context, MaterialPageRoute(builder: (context)=>SignInView()));
                 },
                 child: Container(

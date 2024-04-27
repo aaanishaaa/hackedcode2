@@ -1,5 +1,11 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:groupshot/screens/loginview/successful_onboarding.dart';
+import 'package:groupshot/screens/onboarding/successful_onboarding.dart';
+import 'package:groupshot/controllers/userprofile_signup.dart';
+import 'package:image_picker/image_picker.dart';
+
 
 class ProfileFillForm extends StatefulWidget {
   const ProfileFillForm({super.key});
@@ -9,7 +15,18 @@ class ProfileFillForm extends StatefulWidget {
 }
 
 class _ProfileFillFormState extends State<ProfileFillForm> {
+  File? _imageFile;
+  String? imageUrl;
+
   String? _selectedGender;
+  TextEditingController fullnameController= TextEditingController();
+  TextEditingController nicknameController= TextEditingController();
+
+  TextEditingController emailController= TextEditingController();
+
+  TextEditingController phoneController= TextEditingController();
+  TextEditingController genderController= TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +38,8 @@ class _ProfileFillFormState extends State<ProfileFillForm> {
         leading: IconButton(icon:Icon(Icons.arrow_back_rounded), color: Color(0xFF202244), onPressed: (){Navigator.pop(context);},),
         actions: [],
       ),
-      body: SingleChildScrollView(
+      body:
+      SingleChildScrollView(
         child: Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -34,9 +52,16 @@ class _ProfileFillFormState extends State<ProfileFillForm> {
                 SizedBox(height: 10),
                 Stack(
                   children: [
-                    CircleAvatar(
-                      backgroundImage: AssetImage("assets/images/no_profile_photo.png"),
-                      radius: 50,
+                    GestureDetector(
+                      onTap: (){
+                        pickImageFromGallery();
+                      },
+                      child: CircleAvatar(
+                        backgroundImage: _imageFile != null
+                            ? FileImage(_imageFile!) as ImageProvider<Object>?
+                            : AssetImage("assets/images/no_profile_photo.png") as ImageProvider<Object>?,
+                        radius: 50,
+                      ),
                     ),
                     Positioned(
                       bottom: 0,
@@ -51,6 +76,7 @@ class _ProfileFillFormState extends State<ProfileFillForm> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
+                  controller: fullnameController,
                   decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
@@ -62,6 +88,8 @@ class _ProfileFillFormState extends State<ProfileFillForm> {
                 SizedBox(height: 15),
 
                 TextFormField(
+                  controller: nicknameController,
+
                   decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
@@ -70,22 +98,23 @@ class _ProfileFillFormState extends State<ProfileFillForm> {
                       isDense: true,
                   ),
                 ),
-                SizedBox(height: 15),
+                // SizedBox(height: 15),
 
-                TextFormField(
-                  decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide.none),
-                      hintText: "Date of Birth",
-                      isDense: true,
-                      prefixIcon: Icon(Icons.calendar_month)
-                  ),
-                ),
-                SizedBox(height: 15),
+                // TextFormField(
+                //   decoration: InputDecoration(
+                //       fillColor: Colors.white,
+                //       filled: true,
+                //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide.none),
+                //       hintText: "Date of Birth",
+                //       isDense: true,
+                //       prefixIcon: Icon(Icons.calendar_month)
+                //   ),
+                // ),
 
-                //email to be taken from user account
+                SizedBox(height: 15),
                 TextFormField(
+                  controller: emailController,
+
                   decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
@@ -97,23 +126,38 @@ class _ProfileFillFormState extends State<ProfileFillForm> {
                 ),
                 SizedBox(height: 15),
 
+                //email to be taken from user account
+                // TextFormField(
+                //   decoration: InputDecoration(
+                //       fillColor: Colors.white,
+                //       filled: true,
+                //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide.none),
+                //       hintText: "Password",
+                //       isDense: true,
+                //       prefixIcon: Icon(Icons.lock_outline_rounded)
+                //   ),
+                // ),
+                // SizedBox(height: 15),
+
                 // Container(
                 //   child: Row(
                 //     children: [
                 //
-                //       TextFormField(
-                //         decoration: InputDecoration(
-                //             fillColor: Colors.white,
-                //             filled: true,
-                //             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide.none),
-                //             hintText: "Phone Number",
-                //             isDense: true,
-                //             prefixIcon: Icon(Icons.lock_outline_rounded)
-                //         ),
-                //       ),
-                //     ],
-                //   ),
+                TextFormField(
+                  controller: phoneController,
+                        decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide.none),
+                            hintText: "Phone Number",
+                            isDense: true,
+                            prefixIcon: Icon(Icons.phone)
+                        ),
+                      ),
+                  //   ],
+                  // ),
                 // ),
+                SizedBox(height: 15),
 
             Container(
               width: MediaQuery.of(context).size.width,
@@ -144,7 +188,20 @@ class _ProfileFillFormState extends State<ProfileFillForm> {
                 SizedBox(height:30,),
                 GestureDetector(
                   onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>SuccessfulOnboardingPage()));
+                    var url=UserProfileSignUp.uploadImageToFirebase(_imageFile!);
+                    UserProfileSignUp.createUserProfile(email: emailController.text, image: url.toString(), fullName: fullnameController.text, nickname: nicknameController.text, phoneNumber: phoneController.text, gender: _selectedGender!).then((value) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Profile creation successful!'),
+                          duration: Duration(seconds: 2),
+                        )
+                      );
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>SuccessfulOnboardingPage()));
+
+
+                    }
+
+                    );
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 6, horizontal: 18),
@@ -200,4 +257,16 @@ class _ProfileFillFormState extends State<ProfileFillForm> {
       );
 
   }
+
+  Future<File?> pickImageFromGallery() async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image == null) return null;
+    setState(() {
+      _imageFile=File(image.path);
+    });
+    return File(image.path);
+  }
+
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:groupshot/controllers/userprofile_signup.dart';
+import 'package:groupshot/screens/homeview/homepage.dart';
 import 'package:groupshot/screens/loginview/profilefill_view.dart';
+import 'package:groupshot/screens/loginview/signup_view.dart';
 
 class SignInView extends StatefulWidget {
   const SignInView({super.key});
@@ -9,6 +12,9 @@ class SignInView extends StatefulWidget {
 }
 
 class _SignInViewState extends State<SignInView> {
+  TextEditingController emailController= TextEditingController();
+  TextEditingController pswdController= TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +38,7 @@ class _SignInViewState extends State<SignInView> {
               Text("Memories made to last", style: TextStyle(color: Color(0xff545454), fontSize: 14),),
               SizedBox(height: 30,),
               TextFormField(
+                controller: emailController,
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
@@ -44,6 +51,7 @@ class _SignInViewState extends State<SignInView> {
               SizedBox(height: 15),
         
               TextFormField(
+                controller: pswdController,
                 decoration: InputDecoration(
                     fillColor: Colors.white,
                     filled: true,
@@ -73,7 +81,9 @@ class _SignInViewState extends State<SignInView> {
         
               GestureDetector(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileFillForm()));
+                  UserProfileSignUp.signInWithEmailAndPassword(email: emailController.text, password: pswdController.text);
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePageScreen()));
+
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 6, horizontal: 18),
@@ -176,7 +186,9 @@ class _SignInViewState extends State<SignInView> {
                   Text("Don't have an Account? ",
                     style: TextStyle(color: Color(0xff545454),fontSize: 16),
                   ),
-                  GestureDetector(onTap: (){}, child: Text("SIGN UP", style: TextStyle(color: Color(0xff0961F5), decoration: TextDecoration.underline, fontWeight: FontWeight.bold)),)
+                  GestureDetector(onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpView()));
+                  }, child: Text("SIGN UP", style: TextStyle(color: Color(0xff0961F5), decoration: TextDecoration.underline, fontWeight: FontWeight.bold)),)
                 ],
               )
 
